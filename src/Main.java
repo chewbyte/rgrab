@@ -1,7 +1,5 @@
 
 import javafx.application.Application;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
@@ -21,8 +19,9 @@ public class Main extends Application{
     public void start(Stage primaryStage) throws Exception {
         primary = primaryStage;
         primary.setTitle("rgrab");
+        primary.setResizable(false);
         primary.setOnCloseRequest(e -> closeProgram());
-        button = new Button("rgrab");
+        button = new Button("Add an X to the title");
         button.setOnAction(e -> {
             primary.setTitle(primary.getTitle()+" X");
         });
