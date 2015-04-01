@@ -1,12 +1,19 @@
 
 import javafx.application.Application;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.Group;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.control.*;
+import javafx.stage.StageStyle;
+
+import java.io.File;
 
 public class Main extends Application{
 
@@ -14,6 +21,7 @@ public class Main extends Application{
 
     Stage stage;
     Scene scene;
+    Group rootGroup;
 
     public static void main(String[] args) {
         launch(args);
@@ -26,13 +34,8 @@ public class Main extends Application{
         stage.setResizable(false);
         stage.setOnCloseRequest(e -> closeProgram());
 
-        Group rootGroup = new Group();
+        rootGroup = new Group();
         scene = new Scene(rootGroup,640,480,Color.ALICEBLUE);
-
-        button = new Button("Add an X to the title");
-        button.setOnAction(e -> {
-            stage.setTitle(stage.getTitle()+" X");
-        });
 
         // Create and add MenuBar to Group
         MenuBar menuBar = createMenuBar();
@@ -42,11 +45,30 @@ public class Main extends Application{
         stage.show();
     }
 
-    public void loadFile(){
+    // Allows user to select an image to open
+    public void selectFile(){
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Open");
+
+        // Set supported image filters
         fileChooser.getExtensionFilters().add(new ExtensionFilter("Supported Image Files", "*.png"));
-        fileChooser.showOpenDialog(stage);
+        File file = fileChooser.showOpenDialog(stage);
+        if(file != null){
+            openFile(file);
+        }
+        // else display an error popup
+    }
+
+    // Attempts to open and display the image specified
+    public void openFile(File file){
+        try{
+            // Placeholder display test
+            Image image = new Image("file:///"+file.getAbsolutePath());
+            ImageView imageView = new ImageView(image);
+            rootGroup.getChildren().add(imageView);
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void closeProgram(){
@@ -62,7 +84,7 @@ public class Main extends Application{
         // Menu - File
         Menu menuFile = new Menu("File");
         MenuItem menuOpen = new MenuItem("Open");
-        menuOpen.setOnAction(e -> loadFile());
+        menuOpen.setOnAction(e -> selectFile());
         MenuItem menuExit = new MenuItem("Exit");
         menuExit.setOnAction(e -> closeProgram());
         menuFile.getItems().addAll(menuOpen,new SeparatorMenuItem(),menuExit);
