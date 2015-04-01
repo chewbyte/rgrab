@@ -4,6 +4,8 @@ import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
 import javafx.scene.Group;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.scene.control.*;
 
 public class Main extends Application{
@@ -32,14 +34,45 @@ public class Main extends Application{
             stage.setTitle(stage.getTitle()+" X");
         });
 
-        //Set up menu bar
+        // Create and add MenuBar to Group
+        MenuBar menuBar = createMenuBar();
+        rootGroup.getChildren().addAll(menuBar);
+        
+        stage.setScene(scene);
+        stage.show();
+    }
+
+    public void loadFile(){
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Open");
+        fileChooser.getExtensionFilters().add(new ExtensionFilter("Supported Image Files", "*.png"));
+        fileChooser.showOpenDialog(stage);
+    }
+
+    public void closeProgram(){
+        System.out.println("Shutting down.");
+        stage.close();
+    }
+
+    // Creates the program MenuBar
+    public MenuBar createMenuBar(){
+
         MenuBar menuBar = new MenuBar();
 
         // Menu - File
         Menu menuFile = new Menu("File");
         MenuItem menuOpen = new MenuItem("Open");
+        menuOpen.setOnAction(e -> loadFile());
         MenuItem menuExit = new MenuItem("Exit");
-        menuFile.getItems().addAll(menuOpen,menuExit);
+        menuExit.setOnAction(e -> closeProgram());
+        menuFile.getItems().addAll(menuOpen,new SeparatorMenuItem(),menuExit);
+
+        // Menu - View
+
+        Menu menuView = new Menu("View");
+        MenuItem menuEg1 = new MenuItem("Placeholder");
+        MenuItem menuEg2 = new MenuItem("Placeholder");
+        menuView.getItems().addAll(menuEg1,menuEg2);
 
         // Menu - Help
         Menu menuHelp = new Menu("Help");
@@ -48,20 +81,11 @@ public class Main extends Application{
         menuHelp.getItems().addAll(menuViewHelp,menuAbout);
 
         // Add Menus to MenuBar
-        menuBar.getMenus().addAll(menuFile, menuHelp);
+        menuBar.getMenus().addAll(menuFile, menuView, menuHelp);
 
         // Bind width of Menu to Stage width
         menuBar.prefWidthProperty().bind(stage.widthProperty());
 
-        // Add MenuBar to Group
-        rootGroup.getChildren().addAll(menuBar);
-        
-        stage.setScene(scene);
-        stage.show();
-    }
-
-    public void closeProgram(){
-        System.out.println("Shutting down.");
-        stage.close();
+        return menuBar;
     }
 }
