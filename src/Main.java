@@ -1,23 +1,16 @@
 
 import javafx.application.Application;
-import javafx.geometry.Pos;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.scene.paint.Color;
-import javafx.stage.Stage;
 import javafx.scene.Scene;
-import javafx.stage.FileChooser;
-import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.control.*;
-
+import javafx.scene.layout.BorderPane;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
+import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -85,6 +78,14 @@ public class Main extends Application{
                 imageView = new ImageView(new Image(filepath));
                 imageView.setPreserveRatio(true);
                 layout_main.setCenter(imageView);
+
+                //Set up mouse events
+                imageView.setOnMouseClicked(e -> {
+                    System.out.println(String.format("(%f,%f)",e.getX()+1,e.getY()+1));
+                    int posx = (int) (e.getX()+1);
+                    int posy = (int) (e.getY()+1);
+                    System.out.println(image.getRGB(posx,posy));
+                });
             }
             imageView.setImage(new Image(filepath));
             stage.setTitle(String.format("%s - %dx%d - rgrab",file.getAbsolutePath(),image.getWidth(),image.getHeight()));
@@ -112,7 +113,6 @@ public class Main extends Application{
         menuFile.getItems().addAll(menuOpen,new SeparatorMenuItem(),menuExit);
 
         // Menu - View
-
         Menu menuView = new Menu("View");
         MenuItem menuEg1 = new MenuItem("Placeholder");
         MenuItem menuEg2 = new MenuItem("Placeholder");
