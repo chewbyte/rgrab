@@ -1,22 +1,23 @@
 
 import javafx.application.Application;
+import javafx.geometry.Pos;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
-import javafx.stage.Popup;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
-import javafx.scene.Group;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.*;
-import javafx.stage.StageStyle;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 public class Main extends Application{
@@ -25,7 +26,10 @@ public class Main extends Application{
 
     Stage stage;
     Scene scene;
-    Group rootGroup;
+    VBox layout;
+
+    BufferedImage image;
+    ImageView imageView;
 
     public static void main(String[] args) {
         launch(args);
@@ -38,12 +42,14 @@ public class Main extends Application{
         stage.setResizable(false);
         stage.setOnCloseRequest(e -> closeProgram());
 
-        rootGroup = new Group();
-        scene = new Scene(rootGroup,640,480,Color.ALICEBLUE);
+        // Create scene from layout
+        layout = new VBox();
+        layout.setStyle("-fx-background: #F0F8FF;");
+        scene = new Scene(layout,640,480);
 
         // Create and add MenuBar to Group
         MenuBar menuBar = createMenuBar();
-        rootGroup.getChildren().addAll(menuBar);
+        layout.getChildren().addAll(menuBar);
 
         stage.setScene(scene);
         stage.show();
@@ -66,14 +72,22 @@ public class Main extends Application{
     // Attempts to open and display the image specified
     public void openFile(File file){
         try{
-            // Placeholder display test
             String filepath = "file:///"+file.getAbsolutePath();
-            BufferedImage image = createBufferedImage(filepath);
-            ImageView imageView = new ImageView(new Image(filepath));
-            imageView.setX(32);
-            imageView.setY(32);
-            rootGroup.getChildren().add(imageView);
-            System.out.println(image.getRGB(2,2));
+            // Read in image from file
+            try {
+                image = ImageIO.read(new URL(filepath));
+            }catch(MalformedURLException e){
+                e.printStackTrace();
+            }
+            // Initialise the ImageView if one does not already exist
+            if(imageView == null){
+                imageView = new ImageView(new Image(filepath));
+                imageView.setPreserveRatio(true);
+                layout.setAlignment(Pos.CENTER);
+                layout.getChildren().add(imageView);
+            }
+            imageView.setImage(new Image(filepath));
+            stage.setTitle(String.format("%s - %dx%d - rgrab",file.getAbsolutePath(),image.getWidth(),image.getHeight()));
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -117,16 +131,5 @@ public class Main extends Application{
         menuBar.prefWidthProperty().bind(stage.widthProperty());
 
         return menuBar;
-    }
-
-    // Creates a BufferedImage object from a file path
-    public BufferedImage createBufferedImage(String path){
-        BufferedImage b = null;
-        try {
-            b = ImageIO.read(new URL(path));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return b;
     }
 }
