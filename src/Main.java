@@ -13,7 +13,11 @@ import javafx.scene.image.ImageView;
 import javafx.scene.control.*;
 import javafx.stage.StageStyle;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 
 public class Main extends Application{
 
@@ -40,7 +44,7 @@ public class Main extends Application{
         // Create and add MenuBar to Group
         MenuBar menuBar = createMenuBar();
         rootGroup.getChildren().addAll(menuBar);
-        
+
         stage.setScene(scene);
         stage.show();
     }
@@ -51,7 +55,7 @@ public class Main extends Application{
         fileChooser.setTitle("Open");
 
         // Set supported image filters
-        fileChooser.getExtensionFilters().add(new ExtensionFilter("Supported Image Files", "*.png"));
+        fileChooser.getExtensionFilters().add(new ExtensionFilter("Supported Image Files", "*.png", "*.jpg", "*.gif", "*.bmp"));
         File file = fileChooser.showOpenDialog(stage);
         if(file != null){
             openFile(file);
@@ -63,9 +67,13 @@ public class Main extends Application{
     public void openFile(File file){
         try{
             // Placeholder display test
-            Image image = new Image("file:///"+file.getAbsolutePath());
-            ImageView imageView = new ImageView(image);
+            String filepath = "file:///"+file.getAbsolutePath();
+            BufferedImage image = createBufferedImage(filepath);
+            ImageView imageView = new ImageView(new Image(filepath));
+            imageView.setX(32);
+            imageView.setY(32);
             rootGroup.getChildren().add(imageView);
+            System.out.println(image.getRGB(2,2));
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -109,5 +117,16 @@ public class Main extends Application{
         menuBar.prefWidthProperty().bind(stage.widthProperty());
 
         return menuBar;
+    }
+
+    // Creates a BufferedImage object from a file path
+    public BufferedImage createBufferedImage(String path){
+        BufferedImage b = null;
+        try {
+            b = ImageIO.read(new URL(path));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return b;
     }
 }
