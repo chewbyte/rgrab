@@ -1,6 +1,7 @@
 
 import javafx.application.Application;
 import javafx.geometry.Pos;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -26,7 +27,7 @@ public class Main extends Application{
 
     Stage stage;
     Scene scene;
-    VBox layout;
+    BorderPane layout_main;
 
     BufferedImage image;
     ImageView imageView;
@@ -39,17 +40,17 @@ public class Main extends Application{
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
         stage.setTitle("rgrab");
-        stage.setResizable(false);
+        //stage.setResizable(false);
         stage.setOnCloseRequest(e -> closeProgram());
 
         // Create scene from layout
-        layout = new VBox();
-        layout.setStyle("-fx-background: #F0F8FF;");
-        scene = new Scene(layout,640,480);
+        layout_main = new BorderPane();
+        layout_main.setStyle("-fx-background: #F0F8FF;");
+        scene = new Scene(layout_main,640,480);
 
         // Create and add MenuBar to Group
         MenuBar menuBar = createMenuBar();
-        layout.getChildren().addAll(menuBar);
+        layout_main.setTop(menuBar);
 
         stage.setScene(scene);
         stage.show();
@@ -83,8 +84,7 @@ public class Main extends Application{
             if(imageView == null){
                 imageView = new ImageView(new Image(filepath));
                 imageView.setPreserveRatio(true);
-                layout.setAlignment(Pos.CENTER);
-                layout.getChildren().add(imageView);
+                layout_main.setCenter(imageView);
             }
             imageView.setImage(new Image(filepath));
             stage.setTitle(String.format("%s - %dx%d - rgrab",file.getAbsolutePath(),image.getWidth(),image.getHeight()));
