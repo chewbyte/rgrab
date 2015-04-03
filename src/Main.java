@@ -5,6 +5,8 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.paint.Color;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
@@ -25,6 +27,8 @@ public class Main extends Application{
     BufferedImage image;
     ImageView imageView;
 
+    Rectangle r;
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -44,6 +48,11 @@ public class Main extends Application{
         // Create and add MenuBar to Group
         MenuBar menuBar = createMenuBar();
         layout_main.setTop(menuBar);
+
+        //Create minimap
+        r = new Rectangle(20,30);
+        r.setFill(Color.RED);
+        layout_main.setRight(r);
 
         stage.setScene(scene);
         stage.show();
@@ -81,10 +90,12 @@ public class Main extends Application{
 
                 //Set up mouse events
                 imageView.setOnMouseClicked(e -> {
-                    System.out.println(String.format("(%f,%f)",e.getX()+1,e.getY()+1));
+                    System.out.println(String.format("(%f,%f)", e.getX() + 1, e.getY() + 1));
                     int posx = (int) (e.getX()+1);
                     int posy = (int) (e.getY()+1);
-                    System.out.println(image.getRGB(posx,posy));
+                    System.out.println(image.getRGB(posx, posy));
+                    java.awt.Color c = new java.awt.Color(image.getRGB(posx,posy));
+                    r.setFill(Color.rgb(c.getRed(),c.getGreen(),c.getBlue()));
                 });
             }
             imageView.setImage(new Image(filepath));
