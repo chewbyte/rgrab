@@ -98,8 +98,8 @@ public class Main extends Application{
                 layout_main.setCenter(imageView);
 
                 //Set up mouse events
-                imageView.setOnMouseClicked(e -> {
-                    updateMinimap((int)e.getX(),(int)e.getY());
+                imageView.setOnMouseMoved(e -> {
+                    updateMinimap((int) e.getX(), (int) e.getY());
                 });
             }
             imageView.setImage(new Image(filepath));
@@ -164,7 +164,18 @@ public class Main extends Application{
     }
 
     public void updateMinimap(int x, int y){
-        java.awt.Color c = new java.awt.Color(image.getRGB(x,y));
-        mapGrid[4][4].setFill(Color.rgb(c.getRed(),c.getGreen(),c.getBlue()));
+
+        for(int i=0;i<mapGrid.length;i++) {
+            for (int j = 0; j < mapGrid[i].length; j++) {
+                int adjx = x + j - 4;
+                int adjy = y + i - 4;
+                if (adjx>=0 && adjy>=0 && adjx<image.getWidth() && adjy<image.getHeight()) {
+                    java.awt.Color c = new java.awt.Color(image.getRGB(adjx,adjy));
+                    mapGrid[i][j].setFill(Color.rgb(c.getRed(), c.getGreen(), c.getBlue()));
+                }else{
+                    mapGrid[i][j].setFill(Color.YELLOW);
+                }
+            }
+        }
     }
 }
