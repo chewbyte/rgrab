@@ -1,10 +1,13 @@
 
 import javafx.application.Application;
+import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.FileChooser;
@@ -15,6 +18,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Random;
 
 public class Main extends Application{
 
@@ -23,11 +28,13 @@ public class Main extends Application{
     Stage stage;
     Scene scene;
     BorderPane layout_main;
+    VBox layout_sub;
 
     BufferedImage image;
     ImageView imageView;
 
-    Rectangle r;
+    Group minimap;
+    Rectangle[][] mapGrid;
 
     public static void main(String[] args) {
         launch(args);
@@ -42,7 +49,10 @@ public class Main extends Application{
 
         // Create scene from layout
         layout_main = new BorderPane();
-        layout_main.setStyle("-fx-background: #F0F8FF;");
+        layout_main.setStyle("-fx-background: #FFF;");
+        layout_sub = new VBox();
+        layout_sub.setStyle("-fx-background: #FC0;");
+        layout_main.setRight(layout_sub);
         scene = new Scene(layout_main,640,480);
 
         // Create and add MenuBar to Group
@@ -50,9 +60,8 @@ public class Main extends Application{
         layout_main.setTop(menuBar);
 
         //Create minimap
-        r = new Rectangle(20,30);
-        r.setFill(Color.RED);
-        layout_main.setRight(r);
+        createMinimap();
+        layout_sub.getChildren().add(minimap);
 
         stage.setScene(scene);
         stage.show();
@@ -90,12 +99,7 @@ public class Main extends Application{
 
                 //Set up mouse events
                 imageView.setOnMouseClicked(e -> {
-                    System.out.println(String.format("(%f,%f)", e.getX() + 1, e.getY() + 1));
-                    int posx = (int) (e.getX()+1);
-                    int posy = (int) (e.getY()+1);
-                    System.out.println(image.getRGB(posx, posy));
-                    java.awt.Color c = new java.awt.Color(image.getRGB(posx,posy));
-                    r.setFill(Color.rgb(c.getRed(),c.getGreen(),c.getBlue()));
+                    updateMinimap((int)e.getX(),(int)e.getY());
                 });
             }
             imageView.setImage(new Image(filepath));
@@ -142,5 +146,25 @@ public class Main extends Application{
         menuBar.prefWidthProperty().bind(stage.widthProperty());
 
         return menuBar;
+    }
+
+    public void createMinimap(){
+        minimap = new Group();
+        mapGrid = new Rectangle[9][9];
+        Random rand = new Random();
+        for(int i=0;i<mapGrid.length;i++){
+            for(int j=0;j<mapGrid[i].length;j++){
+                mapGrid[i][j] = new Rectangle(j*16,i*16,16,16);
+                mapGrid[i][j].setFill(Color.rgb(rand.nextInt(255),rand.nextInt(255),rand.nextInt(255)));
+                minimap.getChildren().add(mapGrid[i][j]);
+            }
+        }
+        mapGrid[4][4].setStrokeWidth(2);
+        mapGrid[4][4].setStroke(Color.YELLOW);
+    }
+
+    public void updateMinimap(int x, int y){
+        java.awt.Color c = new java.awt.Color(image.getRGB(x,y));
+        mapGrid[4][4].setFill(Color.rgb(c.getRed(),c.getGreen(),c.getBlue()));
     }
 }
