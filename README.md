@@ -1,5 +1,6 @@
 # rgrab
 ![alt tag](http://i.imgur.com/rxZB8vr.png)
+
 A simple hexcode / rgb grabber from image
 
 A small project I undertook to learn GitHub and the JavaFX platform.
