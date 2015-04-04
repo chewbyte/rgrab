@@ -10,6 +10,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.StrokeType;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
@@ -59,8 +60,8 @@ public class Main extends Application{
         MenuBar menuBar = createMenuBar();
         layout_main.setTop(menuBar);
 
-        //Create minimap
-        createMinimap();
+        //Create minimap with size and pixel square size
+        createMinimap(9,16);
         layout_sub.getChildren().add(minimap);
 
         stage.setScene(scene);
@@ -148,29 +149,32 @@ public class Main extends Application{
         return menuBar;
     }
 
-    public void createMinimap(){
+    public void createMinimap(int n, int s){
         minimap = new Group();
-        mapGrid = new Rectangle[9][9];
+        mapGrid = new Rectangle[n][n];
         Random rand = new Random();
         for(int i=0;i<mapGrid.length;i++){
             for(int j=0;j<mapGrid[i].length;j++){
-                mapGrid[i][j] = new Rectangle(j*16,i*16,16,16);
-                mapGrid[i][j].setFill(Color.rgb(rand.nextInt(255),rand.nextInt(255),rand.nextInt(255)));
+                mapGrid[i][j] = new Rectangle(j*s,i*s,s,s);
+                mapGrid[i][j].setFill(Color.rgb(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255)));
+                mapGrid[i][j].setStroke(Color.GRAY);
                 minimap.getChildren().add(mapGrid[i][j]);
             }
         }
-        mapGrid[4][4].setStrokeWidth(2);
-        mapGrid[4][4].setStroke(Color.YELLOW);
+        mapGrid[n/2][n/2].setStrokeWidth(1);
+        mapGrid[n/2][n/2].setStroke(Color.YELLOW);
+        mapGrid[n/2][n/2].toFront();
     }
 
     public void updateMinimap(int x, int y){
 
+        java.awt.Color c = java.awt.Color.black;
         for(int i=0;i<mapGrid.length;i++) {
             for (int j = 0; j < mapGrid[i].length; j++) {
-                int adjx = x + j - 4;
-                int adjy = y + i - 4;
+                int adjx = x + j - mapGrid.length/2;
+                int adjy = y + i - mapGrid.length/2;
                 if (adjx>=0 && adjy>=0 && adjx<image.getWidth() && adjy<image.getHeight()) {
-                    java.awt.Color c = new java.awt.Color(image.getRGB(adjx,adjy));
+                    c = new java.awt.Color(image.getRGB(adjx,adjy));
                     mapGrid[i][j].setFill(Color.rgb(c.getRed(), c.getGreen(), c.getBlue()));
                 }else{
                     mapGrid[i][j].setFill(Color.YELLOW);
