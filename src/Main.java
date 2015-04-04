@@ -11,6 +11,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.StrokeType;
+import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
@@ -38,6 +39,7 @@ public class Main extends Application{
 
     Rectangle[][] mapGrid;
     Label l_coords,l_rgb,l_hex;
+    TextArea t_hex,t_rgb;
 
     public static void main(String[] args) {
         launch(args);
@@ -53,7 +55,7 @@ public class Main extends Application{
         // Create scene from layout
         layout_main = new BorderPane();
         layout_main.setStyle("-fx-background: #FFF;");
-        layout_sub = new VBox();
+        layout_sub = new VBox(4);
         layout_sub.setStyle("-fx-background: #FC0;");
         layout_main.setRight(layout_sub);
         scene = new Scene(layout_main,640,480);
@@ -63,10 +65,11 @@ public class Main extends Application{
         layout_main.setTop(menuBar);
 
         //Create minimap with size and pixel square size
-        createMinimap(13,12);
+        createMinimap(11, 16);
         layout_sub.getChildren().add(minimap);
+        layout_sub.setPrefWidth(minimap.getBoundsInLocal().getWidth());
         createLabels();
-        layout_sub.getChildren().addAll(l_coords,l_hex,l_rgb);
+        layout_sub.getChildren().addAll(l_coords,l_hex,l_rgb,t_hex,t_rgb);
 
         stage.setScene(scene);
         stage.show();
@@ -105,6 +108,10 @@ public class Main extends Application{
                 imageView.setOnMouseMoved(e -> {
                     updateMinimap((int) e.getX(), (int) e.getY());
                     updateLabels((int) e.getX(), (int) e.getY());
+                });
+
+                imageView.setOnMouseClicked(e -> {
+                    updateTextAreas((int) e.getX(), (int) e.getY());
                 });
             }
             imageView.setImage(new Image(filepath));
@@ -187,16 +194,55 @@ public class Main extends Application{
 
     //Create the labels that display attributes
     public void createLabels(){
-        l_coords = new Label("Location:\t(0,0)");
-        l_hex = new Label("Hex:\t\t#000000");
-        l_rgb = new Label("RGB:\t\trgb(0,0,0)");
+        String font = "-fx-font-family: monospace; -fx-font-size: 12pt";
+
+        l_coords = new Label("x,y: (0,0)");
+        l_hex = new Label("Hex: #000000");
+        l_rgb = new Label("RGB: (0,0,0)");
+        l_coords.setStyle(font);
+        l_hex.setStyle(font);
+        l_rgb.setStyle(font);
+
+        // Hexadecimal TextArea
+        t_hex = new TextArea("#000000");
+        t_hex.setPrefRowCount(0);
+        t_hex.setPrefColumnCount(7);
+        t_hex.setEditable(false);
+        t_hex.setStyle(font);
+        t_hex.prefWidthProperty().bind(layout_sub.widthProperty());
+
+        //RGB TextArea
+        t_rgb = new TextArea("(0,0,0)");
+        t_rgb.setPrefRowCount(0);
+        t_hex.setPrefColumnCount(13);
+        t_rgb.setEditable(false);
+        t_rgb.setStyle(font);
+        t_rgb.prefWidthProperty().bind(layout_sub.widthProperty());
     }
 
     // Update the labels with the relevant information
     public void updateLabels(int x, int y){
         java.awt.Color c = new java.awt.Color(image.getRGB(x,y));
-        l_coords.setText(String.format("Location:\t(%d,%d)",x,y));
-        l_hex.setText(String.format("Hex:\t\t#%02X%02X%02X",c.getRed(),c.getGreen(),c.getBlue()));
-        l_rgb.setText(String.format("RGB:\t\trgb(%d,%d,%d)",c.getRed(),c.getGreen(),c.getBlue()));
+        int red = c.getRed();
+        int green = c.getGreen();
+        int blue = c.getBlue();
+
+        l_coords.setText(String.format("x,y: (%d,%d)",x,y));
+
+        String temp_hex = String.format("#%02X%02X%02X",red,green,blue);
+        l_hex.setText(String.format("Hex: %s",temp_hex));
+
+        String temp_rgb = String.format("(%d,%d,%d)",red,green,blue);
+        l_rgb.setText(String.format("RGB: %s",temp_rgb));
+    }
+
+    public void updateTextAreas(int x, int y){
+        java.awt.Color c = new java.awt.Color(image.getRGB(x,y));
+        int red = c.getRed();
+        int green = c.getGreen();
+        int blue = c.getBlue();
+
+        t_hex.setText(String.format("#%02X%02X%02X",red,green,blue));
+        t_rgb.setText(String.format("(%d,%d,%d)",red,green,blue));
     }
 }
