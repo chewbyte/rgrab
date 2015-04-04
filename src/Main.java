@@ -1,7 +1,6 @@
 
 import javafx.application.Application;
 import javafx.scene.Group;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
@@ -10,8 +9,6 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.shape.StrokeType;
-import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
@@ -20,12 +17,9 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.Random;
 
 public class Main extends Application{
-
-    Button button;
 
     Stage stage;
     Scene scene;
@@ -110,9 +104,7 @@ public class Main extends Application{
                     updateLabels((int) e.getX(), (int) e.getY());
                 });
 
-                imageView.setOnMouseClicked(e -> {
-                    updateTextAreas((int) e.getX(), (int) e.getY());
-                });
+                imageView.setOnMouseClicked(e -> updateTextAreas((int) e.getX(), (int) e.getY()));
             }
             imageView.setImage(new Image(filepath));
             stage.setTitle(String.format("%s - %dx%d - rgrab",file.getAbsolutePath(),image.getWidth(),image.getHeight()));
