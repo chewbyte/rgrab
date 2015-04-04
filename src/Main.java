@@ -43,14 +43,12 @@ public class Main extends Application{
     public void start(Stage primaryStage) throws Exception {
         stage = primaryStage;
         stage.setTitle("rgrab");
-        //stage.setResizable(false);
         stage.setOnCloseRequest(e -> closeProgram());
 
         // Create scene from layout
         layout_main = new BorderPane();
-        layout_main.setStyle("-fx-background: #FFF;");
         layout_sub = new VBox(4);
-        layout_sub.setStyle("-fx-background: #FC0;");
+        layout_sub.setStyle("-fx-padding:4px");
         layout_main.setRight(layout_sub);
         scene = new Scene(layout_main,640,480);
 
