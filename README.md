@@ -1,4 +1,3 @@
-# rgrab
 ![alt tag](http://i.imgur.com/rxZB8vr.png)
 
 A simple hexcode / rgb grabber from image
