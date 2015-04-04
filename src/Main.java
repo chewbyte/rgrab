@@ -35,7 +35,9 @@ public class Main extends Application{
     ImageView imageView;
 
     Group minimap;
+
     Rectangle[][] mapGrid;
+    Label l_coords,l_rgb,l_hex;
 
     public static void main(String[] args) {
         launch(args);
@@ -61,8 +63,10 @@ public class Main extends Application{
         layout_main.setTop(menuBar);
 
         //Create minimap with size and pixel square size
-        createMinimap(9,16);
+        createMinimap(13,12);
         layout_sub.getChildren().add(minimap);
+        createLabels();
+        layout_sub.getChildren().addAll(l_coords,l_hex,l_rgb);
 
         stage.setScene(scene);
         stage.show();
@@ -76,10 +80,9 @@ public class Main extends Application{
         // Set supported image filters
         fileChooser.getExtensionFilters().add(new ExtensionFilter("Supported Image Files", "*.png", "*.jpg", "*.gif", "*.bmp"));
         File file = fileChooser.showOpenDialog(stage);
-        if(file != null){
+        if(file != null) {
             openFile(file);
         }
-        // else display an error popup
     }
 
     // Attempts to open and display the image specified
@@ -101,6 +104,7 @@ public class Main extends Application{
                 //Set up mouse events
                 imageView.setOnMouseMoved(e -> {
                     updateMinimap((int) e.getX(), (int) e.getY());
+                    updateLabels((int) e.getX(), (int) e.getY());
                 });
             }
             imageView.setImage(new Image(filepath));
@@ -149,37 +153,50 @@ public class Main extends Application{
         return menuBar;
     }
 
+    // Create the minimap
     public void createMinimap(int n, int s){
         minimap = new Group();
         mapGrid = new Rectangle[n][n];
         Random rand = new Random();
-        for(int i=0;i<mapGrid.length;i++){
-            for(int j=0;j<mapGrid[i].length;j++){
-                mapGrid[i][j] = new Rectangle(j*s,i*s,s,s);
+        for(int i=0;i<mapGrid.length;i++) {
+            for (int j = 0; j < mapGrid[i].length; j++) {
+                mapGrid[i][j] = new Rectangle(j * s, i * s, s, s);
                 mapGrid[i][j].setFill(Color.rgb(rand.nextInt(255), rand.nextInt(255), rand.nextInt(255)));
                 mapGrid[i][j].setStroke(Color.GRAY);
                 minimap.getChildren().add(mapGrid[i][j]);
             }
         }
-        mapGrid[n/2][n/2].setStrokeWidth(1);
         mapGrid[n/2][n/2].setStroke(Color.YELLOW);
         mapGrid[n/2][n/2].toFront();
     }
 
+    // Update the minimap with the pixels surrounding the mouse
     public void updateMinimap(int x, int y){
-
-        java.awt.Color c = java.awt.Color.black;
         for(int i=0;i<mapGrid.length;i++) {
             for (int j = 0; j < mapGrid[i].length; j++) {
-                int adjx = x + j - mapGrid.length/2;
-                int adjy = y + i - mapGrid.length/2;
-                if (adjx>=0 && adjy>=0 && adjx<image.getWidth() && adjy<image.getHeight()) {
-                    c = new java.awt.Color(image.getRGB(adjx,adjy));
+                int adjx = x + j - mapGrid.length / 2;
+                int adjy = y + i - mapGrid.length / 2;
+                // Color out-of-bounds pixels in yellow
+                if (adjx >= 0 && adjy >= 0 && adjx < image.getWidth() && adjy < image.getHeight()) {
+                    java.awt.Color c = new java.awt.Color(image.getRGB(adjx, adjy));
                     mapGrid[i][j].setFill(Color.rgb(c.getRed(), c.getGreen(), c.getBlue()));
-                }else{
-                    mapGrid[i][j].setFill(Color.YELLOW);
-                }
+                } else mapGrid[i][j].setFill(Color.YELLOW);
             }
         }
+    }
+
+    //Create the labels that display attributes
+    public void createLabels(){
+        l_coords = new Label("Location:\t(0,0)");
+        l_hex = new Label("Hex:\t\t#000000");
+        l_rgb = new Label("RGB:\t\trgb(0,0,0)");
+    }
+
+    // Update the labels with the relevant information
+    public void updateLabels(int x, int y){
+        java.awt.Color c = new java.awt.Color(image.getRGB(x,y));
+        l_coords.setText(String.format("Location:\t(%d,%d)",x,y));
+        l_hex.setText(String.format("Hex:\t\t#%02X%02X%02X",c.getRed(),c.getGreen(),c.getBlue()));
+        l_rgb.setText(String.format("RGB:\t\trgb(%d,%d,%d)",c.getRed(),c.getGreen(),c.getBlue()));
     }
 }
