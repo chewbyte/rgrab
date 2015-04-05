@@ -175,35 +175,35 @@ public class Main extends Application{
                 int adjy = y + i - mapGrid.length / 2;
                 // Color out-of-bounds pixels in yellow
                 if (adjx >= 0 && adjy >= 0 && adjx < image.getWidth() && adjy < image.getHeight()) {
-                    java.awt.Color c = new java.awt.Color(image.getRGB(adjx, adjy));
-                    mapGrid[i][j].setFill(Color.rgb(c.getRed(), c.getGreen(), c.getBlue()));
-                } else mapGrid[i][j].setFill(Color.YELLOW);
+                    java.awt.Color c = new java.awt.Color(image.getRGB(adjx, adjy),true);
+                    mapGrid[i][j].setFill(Color.rgb(c.getRed(), c.getGreen(), c.getBlue(),((double)c.getAlpha()/255)));
+                } else mapGrid[i][j].setFill(Color.TRANSPARENT);
             }
         }
     }
 
     //Create the labels that display attributes
     public void createLabels(){
-        String font = "-fx-font-family: monospace; -fx-font-size: 12pt";
+        String font = "-fx-font-family: monospace; -fx-font-size: 9pt";
 
-        l_coords = new Label("x,y: (0,0)");
-        l_hex = new Label("Hex: #000000");
-        l_rgb = new Label("RGB: (0,0,0)");
+        l_coords = new Label("x,y:  (0,0)");
+        l_hex = new Label("Hex:  #000000");
+        l_rgb = new Label("RGBA: (0,0,0,0)");
         l_coords.setStyle(font);
         l_hex.setStyle(font);
         l_rgb.setStyle(font);
 
         // Hexadecimal TextArea
         t_hex = new TextArea("#000000");
-        t_hex.setPrefRowCount(0);
+        t_hex.setPrefRowCount(1);
         t_hex.setPrefColumnCount(7);
         t_hex.setEditable(false);
         t_hex.setStyle(font);
         t_hex.prefWidthProperty().bind(layout_sub.widthProperty());
 
         //RGB TextArea
-        t_rgb = new TextArea("(0,0,0)");
-        t_rgb.setPrefRowCount(0);
+        t_rgb = new TextArea("(0,0,0,0)");
+        t_rgb.setPrefRowCount(1);
         t_hex.setPrefColumnCount(13);
         t_rgb.setEditable(false);
         t_rgb.setStyle(font);
@@ -212,27 +212,29 @@ public class Main extends Application{
 
     // Update the labels with the relevant information
     public void updateLabels(int x, int y){
-        java.awt.Color c = new java.awt.Color(image.getRGB(x,y));
+        java.awt.Color c = new java.awt.Color(image.getRGB(x,y),true);
         int red = c.getRed();
         int green = c.getGreen();
         int blue = c.getBlue();
+        int alpha = c.getAlpha();
 
-        l_coords.setText(String.format("x,y: (%d,%d)",x,y));
+        l_coords.setText(String.format("x,y:  (%d,%d)",x,y));
 
         String temp_hex = String.format("#%02X%02X%02X",red,green,blue);
-        l_hex.setText(String.format("Hex: %s",temp_hex));
+        l_hex.setText(String.format("Hex:  %s",temp_hex));
 
-        String temp_rgb = String.format("(%d,%d,%d)",red,green,blue);
-        l_rgb.setText(String.format("RGB: %s",temp_rgb));
+        String temp_rgb = String.format("(%d,%d,%d,%d)",red,green,blue,alpha);
+        l_rgb.setText(String.format("RGBA: %s",temp_rgb));
     }
 
     public void updateTextAreas(int x, int y){
-        java.awt.Color c = new java.awt.Color(image.getRGB(x,y));
+        java.awt.Color c = new java.awt.Color(image.getRGB(x,y),true);
         int red = c.getRed();
         int green = c.getGreen();
         int blue = c.getBlue();
+        int alpha = c.getAlpha();
 
         t_hex.setText(String.format("#%02X%02X%02X",red,green,blue));
-        t_rgb.setText(String.format("(%d,%d,%d)",red,green,blue));
+        t_rgb.setText(String.format("(%d,%d,%d,%d)",red,green,blue,alpha));
     }
 }
