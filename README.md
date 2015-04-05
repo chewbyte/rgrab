@@ -2,8 +2,6 @@
 
 A simple hexcode / rgb grabber from image
 
-A small project I undertook to learn GitHub and the JavaFX platform.
-
 ![alt tag](http://i.imgur.com/rgZHfub.png)
 
 Written in Java, using JavaFX for GUI
