@@ -14,7 +14,10 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.ObjectInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Random;
@@ -61,7 +64,7 @@ public class Main extends Application{
         layout_sub.getChildren().add(minimap);
         layout_sub.setPrefWidth(minimap.getBoundsInLocal().getWidth());
         createLabels();
-        layout_sub.getChildren().addAll(l_coords,l_hex,l_rgb,t_hex,t_rgb);
+        layout_sub.getChildren().addAll(l_coords, l_hex, l_rgb, t_hex, t_rgb);
 
         stage.setScene(scene);
         stage.show();
