@@ -5,6 +5,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -14,10 +15,7 @@ import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.ObjectInputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Random;
@@ -60,11 +58,9 @@ public class Main extends Application{
         layout_main.setTop(menuBar);
 
         //Create minimap with size and pixel square size
-        createMinimap(11, 16);
-        layout_sub.getChildren().add(minimap);
-        layout_sub.setPrefWidth(minimap.getBoundsInLocal().getWidth());
         createLabels();
         layout_sub.getChildren().addAll(l_coords, l_hex, l_rgb, t_hex, t_rgb);
+        createMinimap(11, 16);
 
         stage.setScene(scene);
         stage.show();
@@ -127,16 +123,22 @@ public class Main extends Application{
         // Menu - File
         Menu menuFile = new Menu("File");
         MenuItem menuOpen = new MenuItem("Open");
+        menuOpen.setAccelerator(KeyCombination.keyCombination("Ctrl+O"));
         menuOpen.setOnAction(e -> selectFile());
         MenuItem menuExit = new MenuItem("Exit");
+        menuExit.setAccelerator(KeyCombination.keyCombination("Ctrl+Q"));
         menuExit.setOnAction(e -> closeProgram());
         menuFile.getItems().addAll(menuOpen,new SeparatorMenuItem(),menuExit);
 
         // Menu - View
         Menu menuView = new Menu("View");
-        MenuItem menuEg1 = new MenuItem("Placeholder");
-        MenuItem menuEg2 = new MenuItem("Placeholder");
-        menuView.getItems().addAll(menuEg1,menuEg2);
+        MenuItem menuMiniSmall = new MenuItem("Minimap - Small");
+        menuMiniSmall.setOnAction(e -> createMinimap(9,16));
+        MenuItem menuMiniNormal = new MenuItem("Minimap - Normal");
+        menuMiniNormal.setOnAction(e -> createMinimap(11,16));
+        MenuItem menuMiniLarge = new MenuItem("Minimap - Large");
+        menuMiniLarge.setOnAction(e -> createMinimap(13,16));
+        menuView.getItems().addAll(menuMiniLarge,menuMiniNormal,menuMiniSmall);
 
         // Menu - Help
         Menu menuHelp = new Menu("Help");
@@ -155,6 +157,7 @@ public class Main extends Application{
 
     // Create the minimap
     public void createMinimap(int n, int s){
+        layout_sub.getChildren().remove(minimap);
         minimap = new Group();
         mapGrid = new Rectangle[n][n];
         Random rand = new Random();
@@ -166,8 +169,10 @@ public class Main extends Application{
                 minimap.getChildren().add(mapGrid[i][j]);
             }
         }
-        mapGrid[n/2][n/2].setStroke(Color.YELLOW);
+        mapGrid[n / 2][n/2].setStroke(Color.YELLOW);
         mapGrid[n/2][n/2].toFront();
+        layout_sub.getChildren().add(minimap);
+        layout_sub.setPrefWidth(minimap.getBoundsInLocal().getWidth());
     }
 
     // Update the minimap with the pixels surrounding the mouse
@@ -178,8 +183,8 @@ public class Main extends Application{
                 int adjy = y + i - mapGrid.length / 2;
                 // Color out-of-bounds pixels in yellow
                 if (adjx >= 0 && adjy >= 0 && adjx < image.getWidth() && adjy < image.getHeight()) {
-                    java.awt.Color c = new java.awt.Color(image.getRGB(adjx, adjy),true);
-                    mapGrid[i][j].setFill(Color.rgb(c.getRed(), c.getGreen(), c.getBlue(),((double)c.getAlpha()/255)));
+                    java.awt.Color color = new java.awt.Color(image.getRGB(adjx, adjy),true);
+                    mapGrid[i][j].setFill(Color.rgb(color.getRed(), color.getGreen(), color.getBlue(),((double)color.getAlpha()/255)));
                 } else mapGrid[i][j].setFill(Color.TRANSPARENT);
             }
         }
@@ -215,27 +220,23 @@ public class Main extends Application{
 
     // Update the labels with the relevant information
     public void updateLabels(int x, int y){
-        java.awt.Color c = new java.awt.Color(image.getRGB(x,y),true);
-        int red = c.getRed();
-        int green = c.getGreen();
-        int blue = c.getBlue();
-        int alpha = c.getAlpha();
+        java.awt.Color color = new java.awt.Color(image.getRGB(x,y),true);
+        int red = color.getRed();
+        int green = color.getGreen();
+        int blue = color.getBlue();
+        int alpha = color.getAlpha();
 
-        l_coords.setText(String.format("x,y:  (%d,%d)",x,y));
-
-        String temp_hex = String.format("#%02X%02X%02X",red,green,blue);
-        l_hex.setText(String.format("Hex:  %s",temp_hex));
-
-        String temp_rgb = String.format("(%d,%d,%d,%d)",red,green,blue,alpha);
-        l_rgb.setText(String.format("RGBA: %s",temp_rgb));
+        l_coords.setText(String.format("(x,y):  (%d,%d)",x,y));
+        l_hex.setText(String.format("Hex: #%02X%02X%02X", red, green, blue));
+        l_rgb.setText(String.format("RGBA: (%d,%d,%d,%d)",red,green,blue,alpha));
     }
 
     public void updateTextAreas(int x, int y){
-        java.awt.Color c = new java.awt.Color(image.getRGB(x,y),true);
-        int red = c.getRed();
-        int green = c.getGreen();
-        int blue = c.getBlue();
-        int alpha = c.getAlpha();
+        java.awt.Color color = new java.awt.Color(image.getRGB(x,y),true);
+        int red = color.getRed();
+        int green = color.getGreen();
+        int blue = color.getBlue();
+        int alpha = color.getAlpha();
 
         t_hex.setText(String.format("#%02X%02X%02X",red,green,blue));
         t_rgb.setText(String.format("(%d,%d,%d,%d)",red,green,blue,alpha));
