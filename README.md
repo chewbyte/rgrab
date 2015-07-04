@@ -2,7 +2,7 @@
 
 A simple hexcode / rgb grabber from image
 
-![alt tag](http://i.imgur.com/rgZHfub.png)
+![alt tag](http://i.imgur.com/iM5ZULY.png)
 
 Written in Java, using JavaFX for GUI
 
