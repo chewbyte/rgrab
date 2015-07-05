@@ -1,4 +1,3 @@
-
 import javafx.application.Application;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -196,29 +195,22 @@ public class Main extends Application{
 
         HBox selectedGroup = new HBox(2);
 
-        String font = "-fx-font-family: monospace; -fx-font-size: 9pt";
-
         Label selectedText = new Label("Selected colour: ");
-        selectedText.setStyle(font);
 
         selectedColor = new Rectangle(16,16);
         selectedColor.setStroke(Color.GRAY);
 
         selectedGroup.getChildren().addAll(selectedText,selectedColor);
 
-        l_coords = new Label("x,y:  (0,0)");
-        l_hex = new Label("Hex:  #000000");
+        l_coords = new Label("(x,y): (0,0)");
+        l_hex = new Label("Hex: #000000");
         l_rgb = new Label("RGBA: (0,0,0,0)");
-        l_coords.setStyle(font);
-        l_hex.setStyle(font);
-        l_rgb.setStyle(font);
 
         // Hexadecimal TextArea
         t_hex = new TextArea("#000000");
         t_hex.setPrefRowCount(1);
         t_hex.setPrefColumnCount(7);
         t_hex.setEditable(false);
-        t_hex.setStyle(font);
         t_hex.prefWidthProperty().bind(layout_sub.widthProperty());
 
         //RGB TextArea
@@ -226,7 +218,6 @@ public class Main extends Application{
         t_rgb.setPrefRowCount(1);
         t_hex.setPrefColumnCount(13);
         t_rgb.setEditable(false);
-        t_rgb.setStyle(font);
         t_rgb.prefWidthProperty().bind(layout_sub.widthProperty());
 
         layout_sub.getChildren().addAll(selectedGroup,l_coords, l_hex, l_rgb, t_hex, t_rgb);
@@ -234,15 +225,15 @@ public class Main extends Application{
 
     // Update the labels with the relevant information
     public void updateLabels(int x, int y){
-        java.awt.Color color = new java.awt.Color(image.getRGB(x,y),true);
+        java.awt.Color color = new java.awt.Color(image.getRGB(x, y),true);
         int red = color.getRed();
         int green = color.getGreen();
         int blue = color.getBlue();
         int alpha = color.getAlpha();
 
-        l_coords.setText(String.format("(x,y) :  (%d,%d)",x,y));
-        l_hex.setText(String.format("Hex : #%02X%02X%02X", red, green, blue));
-        l_rgb.setText(String.format("RGBA : (%d,%d,%d,%d)",red,green,blue,alpha));
+        l_coords.setText(String.format("(x,y): (%d,%d)",x,y));
+        l_hex.setText(String.format("Hex: #%02X%02X%02X", red, green, blue));
+        l_rgb.setText(String.format("RGBA: (%d,%d,%d,%d)",red,green,blue,alpha));
     }
 
     public void updateTextAreas(int x, int y){
