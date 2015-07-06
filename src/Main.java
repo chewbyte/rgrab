@@ -5,6 +5,7 @@ import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCombination;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -51,7 +52,7 @@ public class Main extends Application {
         // Create scene from layout
         layout_main = new BorderPane();
         layout_sub = new VBox(4);
-        layout_sub.setStyle("-fx-padding:4px");
+        layout_sub.setStyle("-fx-padding:8px;-fx-background-color:#E0E0E0");
         layout_main.setRight(layout_sub);
         scene = new Scene(layout_main, 640, 480);
 
